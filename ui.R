@@ -33,10 +33,8 @@ ui <- fluidPage(
     sidebarPanel(
       textInput("user_input", "Enter a phrase for the theme:", value = "Abstract purple minimal"),
       textInput("api_key", "Enter your OpenAI API key"),
+      tags$p("To generate images for slide backgrounds, use the checkbox below. Note that you must run it locally and not from shinyapps.io to generate images, as the app will time out in the browser. Download the app from ", tags$a(href = "https://github.com/melissavanbussel/theme-generator", target = "_blank", "my GitHub"), "to run it locally."),
       checkboxInput("images_checkbox", "Generate images in addition to CSS?", value = FALSE),
-      helpText('Click the button below to generate the necessary files (warning: clicking this will cost more money and take several minutes longer if the "generate images" checkbox is checked!)'),
-      br(),
-      br(),
       actionButton("generate_button", "Generate my theme"),
       br(),
       br(),
