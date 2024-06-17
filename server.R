@@ -164,8 +164,8 @@ $primary-color: ", recommendations$primary_color, ";\n",
 "$secondary-color: ", recommendations$secondary_color, ";\n",
 "$tertiary-color: lighten($secondary-color, 15%);\n",
 "$accent-color: ", recommendations$accent_color, ";\n",
-"$theme-white: #000;\n",
-"$theme-black: #fff;\n",
+"$theme-white: #fff;\n",
+"$theme-black: #000;\n",
 
 font_url,
 
@@ -412,7 +412,7 @@ author: 'Your Name Goes Here'
 format:
   revealjs:
     theme: custom.scss
-    highlight-style: ", recommendations$highlight_style, "\n", "
+    highlight-style: ", recommendations$highlight_style, "
     title-slide-attributes: 
       data-background-image: 'images/title1.png'
 ---
