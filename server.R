@@ -151,7 +151,7 @@ jobs:
     # Get font and font color recommendations using OpenAI Chat model
     chat_response <- request("https://api.openai.com/v1") |>
       req_url_path_append("/chat/completions") |>
-      req_auth_bearer_token(Sys.getenv("OPENAI_API_KEY")) |>
+      req_auth_bearer_token(input$api_key) |>
       req_body_json(list(
         model = "gpt-4",
         messages = list(
