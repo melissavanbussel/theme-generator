@@ -2,21 +2,22 @@ library(shiny)
 library(shinyFiles)
 library(httr2)
 library(tidyverse)
+library(zip)
 
 server <- function(input, output, session) {
-  roots <- c(wd = '.')
-  shinyDirChoose(input, "folder_location", roots = roots)
-  
+
   observeEvent(input$generate_button, {
-    req(input$user_input)
-    req(input$folder_location)
+    req(input$user_input, input$api_key)
     
     user_input <- input$user_input
-    folder <- parseDirPath(roots, input$folder_location)
+    
+    # Create temporary folder to save all outputs to
+    temp_dir <- tempdir()
+    setwd(temp_dir)
     
     # Generate folder name based on user input
     folder_name <- gsub(" ", "_", tolower(user_input))
-    target_folder <- file.path(folder, folder_name)
+    target_folder <- file.path(getwd(), folder_name)
     images_folder <- file.path(target_folder, "images")
     
     # Create directories
@@ -545,6 +546,16 @@ This is a footer with a link: [https://wwww.google.com](https://wwww.google.com)
 ")
 writeLines(slides_content, file.path(target_folder, "slides.qmd"))
 
-output$status <- renderText("Theme generated successfully!")
-  })
+  output$status <- renderText("Theme generated successfully!")
+    })
+  
+  output$downloadData <- downloadHandler(
+    filename = function() {
+      paste("project_files_", Sys.Date(), ".zip", sep = "")
+    },
+    content = function(file) {
+      zip(file, list.files())
+    },
+    contentType = "application/zip"
+  )
 }

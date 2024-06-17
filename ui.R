@@ -27,16 +27,13 @@ ui <- fluidPage(
     sidebarPanel(
       textInput("user_input", "Enter a phrase for the theme:", value = "Abstract purple minimal"),
       textInput("api_key", "Enter your OpenAI API key"),
-      helpText("Use the button below to select a folder where you'd like to save the files to."),
-      br(),
-      br(),
-      shinyDirButton("folder_location", "Select Folder", "Please select a folder"),
-      br(),
-      br(),
       helpText("Click the button below to generate the necessary files (warning: clicking this will cost money!)"),
       br(),
       br(),
-      actionButton("generate_button", "Generate my theme")
+      actionButton("generate_button", "Generate my theme"),
+      br(),
+      br(),
+      downloadButton("downloadData", "Download All Files")
     ),
     
     mainPanel(class = "main-panel",
