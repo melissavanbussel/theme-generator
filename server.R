@@ -130,7 +130,7 @@ for (i in 1:length(image_names)){
     ) |>
     req_perform() |>
     resp_body_json()
-  
+
   image_url <- response$data[[1]]$url
   download.file(image_url, file.path(images_folder, image_names[i]), mode = "wb")
 }
@@ -162,7 +162,7 @@ scss_content <- paste0(
 "/*-- scss:defaults --*/
 $primary-color: ", recommendations$primary_color, ";\n",
 "$secondary-color: ", recommendations$secondary_color, ";\n",
-"$tertiary-color: ", recommendations$tertiary_color, ";\n",
+"$tertiary-color: lighten($secondary-color, 15%);\n",
 "$accent-color: ", recommendations$accent_color, ";\n",
 "$theme-white: #000;\n",
 "$theme-black: #fff;\n",
@@ -412,8 +412,8 @@ author: 'Your Name Goes Here'
 format:
   revealjs:
     theme: custom.scss
-    highlight-style: ", recommendations$highlight_style,
-"    title-slide-attributes: 
+    highlight-style: ", recommendations$highlight_style, "\n", "
+    title-slide-attributes: 
       data-background-image: 'images/title1.png'
 ---
 
