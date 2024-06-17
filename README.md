@@ -2,7 +2,7 @@
 
 This Shiny app takes a user-inputted phrase (e.g., "Abstract purple minimal") and generates a Quarto revealjs theme. 
 
-![]("www/demo.png")
+![](www/demo.png)
 
 ## How it works
 
@@ -18,7 +18,7 @@ The app then generates all necessary files:
 * A project `README.md` with usage and modification instructions
 * A configuration file for GitHub Actions and GitHub Pages -- just push the repo, and the slides will be hosted automatically on GitHub Pages and automatically updated any time a commit is made.
 
-![]("www/app_screenshot.png")
+![](www/app_screenshot.png)
 
 ## How to use this app
 
