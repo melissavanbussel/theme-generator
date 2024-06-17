@@ -572,7 +572,7 @@ This is a footer with a link: [https://wwww.google.com](https://wwww.google.com)
         paste("project_files_", Sys.Date(), ".zip", sep = "")
       },
       content = function(file) {
-        zip(file, "www/demo.png")
+        zip(file, folder_name)
       },
       contentType = "application/zip"
     )

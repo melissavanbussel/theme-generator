@@ -6,6 +6,7 @@ ui <- fluidPage(
   theme = bs_theme(bootswatch = "lux", primary = "#680dad", secondary = "#9867ea"),
   
   tags$head(
+    tags$link(rel = "icon", type = "image/png", href = "favicon.png"),
     tags$style(
       HTML("
         .container {
