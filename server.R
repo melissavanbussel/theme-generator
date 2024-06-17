@@ -61,14 +61,14 @@ server <- function(input, output, session) {
     readme_content <- paste0(
 "# Project Title
 
-This is a sample Quarto project generated with the following theme:", user_input,
+This is a sample Quarto project generated with the following theme:\n", user_input,
 
-"## How to Use
+"\n## How to Use
 
 1. In RStudio, use `New project > Existing directory` to create an R project for the generated outputs folder
 2. If pushing to GitHub, run `renv::init()` when R project is opened in RStudio, and use `renv::status()` and `renv::snapshot()` as project is modified in order to keep package information updated
 3. If pushing to GitHub, run `git init` inside the project directory and then commit and push
-4. on GitHub, add a `gh-pages` branch and ensure that `gh-pages` is selected under `Settings > Pages > Deploy from a branch`.
+4. On GitHub, add a `gh-pages` branch and ensure that `gh-pages` is selected under `Settings > Pages > Deploy from a branch`.
 5. Edit the `slides.qmd` file to add your content.
 6. Customize the `custom.scss` file to change the theme.
 7. When rendering locally, make a copy of all images in the `images` folder and put them into `slides_files/libs/revealjs/dist/theme`
