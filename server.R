@@ -24,31 +24,6 @@ server <- function(input, output, session) {
     dir.create(images_folder, showWarnings = FALSE, recursive = TRUE)
     dir.create(file.path(target_folder, ".github/workflows"), showWarnings = FALSE, recursive = TRUE)
     
-    # Create slides.qmd with sample content
-    slides_content <- 
-"---
-title: 'Sample Presentation'
-format:
-  revealjs:
-    theme: custom.scss
----
-
-## Slide 1 {.theme-slide1}
-
-Content for slide 1.
-
-**This** is some [text](https://google.com) and this is some `inline_code`.
-
-```{r}
-print('Hello world!')
-```
-
-## Slide 2
-
-Content for slide 2.
-"
-    writeLines(slides_content, file.path(target_folder, "slides.qmd"))
-    
 # Create .gitignore file
 gitignore_content <- 
 ".Rproj.user
@@ -144,18 +119,21 @@ jobs:
 "
 writeLines(publish_yml_content, file.path(target_folder, ".github/workflows/publish.yml"))
 
-# Generate image using DALLE 3
-response <- request("https://api.openai.com/v1") |>
-  req_url_path_append("/images/generations") |>
-  req_auth_bearer_token(Sys.getenv("OPENAI_API_KEY")) |>
-  req_body_json(
-    list(prompt = paste(user_input, "desktop background"))
-  ) |>
-  req_perform() |>
-  resp_body_json()
-
-image_url <- response$data[[1]]$url
-download.file(image_url, file.path(images_folder, "slide1.png"), mode = "wb")
+# Generate images using DALLE 3
+image_names <- c("title1.png", paste0("section", 1:3, ".png"), paste0("slide", 1:6, ".png"))
+for (i in 1:length(image_names)){
+  response <- request("https://api.openai.com/v1") |>
+    req_url_path_append("/images/generations") |>
+    req_auth_bearer_token(input$api_key) |>
+    req_body_json(
+      list(prompt = paste(user_input, "desktop background"))
+    ) |>
+    req_perform() |>
+    resp_body_json()
+  
+  image_url <- response$data[[1]]$url
+  download.file(image_url, file.path(images_folder, image_names[i]), mode = "wb")
+}
 
 # Get font and font color recommendations using OpenAI Chat model
 chat_response <- request("https://api.openai.com/v1") |>
@@ -165,7 +143,7 @@ chat_response <- request("https://api.openai.com/v1") |>
     model = "gpt-4",
     messages = list(
       list(role = "system", content = "You are a design assistant."),
-      list(role = "user", content = paste("Based on the theme", user_input, ", recommend a font family and three colors for primary, secondary, tertiary, and accent. The accent color should contrast the other colors. Provide the recommendations in JSON format with keys: 'font_family', 'primary_color', 'secondary_color', 'tertiary_color', and 'accent_color'."))
+      list(role = "user", content = paste("Based on the theme", user_input, ", recommend a Google font family and three colors for primary, secondary, and accent. The accent color should contrast the other colors. The font family should be the full name used by Google Fonts. Also recommend a pandoc highlight-style name that matches. Provide the recommendations in JSON format with keys: 'font_family', 'primary_color', 'secondary_color', 'accent_color', and 'highlight_style'."))
     )
   )) |>
   req_perform() |>
@@ -186,16 +164,19 @@ $primary-color: ", recommendations$primary_color, ";\n",
 "$secondary-color: ", recommendations$secondary_color, ";\n",
 "$tertiary-color: ", recommendations$tertiary_color, ";\n",
 "$accent-color: ", recommendations$accent_color, ";\n",
+"$theme-white: #000;\n",
+"$theme-black: #fff;\n",
 
 font_url,
 
 "$font-family-sans-serif: '", recommendations$font_family, "', sans-serif;\n
 
+$presentation-heading-color: $theme-white;
 $body-color: $primary-color;
 $link-color: $secondary-color; 
-$link-color-hover: $tertiary-color;
 $selected-text-color: $secondary-color;
 $code-color: $accent-color;
+$code-block-bg: $tertiary-color;
 
 /*-- scss:rules --*/
 
@@ -205,9 +186,25 @@ $code-color: $accent-color;
   background-repeat: no-repeat;
 }    
 
+.footer {
+  p {
+    color: $secondary-color;
+  }
+  a {
+    color: lighten($link-color, 15%);
+  }
+  a:hover {
+    color: lighten($link-color, 25%);
+  }
+}
+
 .theme-slide1 {
   position: relative;
   z-index: 0;
+  
+  h2 {
+    color: $secondary-color;
+  }
 
   &:is(.slide-background) {
     &::before {
@@ -224,8 +221,329 @@ $code-color: $accent-color;
     }
   }
 }
+
+.theme-slide2 {
+  position: relative;
+  z-index: 0;
+  
+  h2 {
+    color: $secondary-color;
+  }
+
+  &:is(.slide-background) {
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('slide2.png');
+      @include background-full;
+      opacity: 0.2;
+      z-index: -1;
+    }
+  }
+}
+
+.theme-slide3 {
+  position: relative;
+  z-index: 0;
+  
+  h2 {
+    color: $secondary-color;
+  }
+
+  &:is(.slide-background) {
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('slide3.png');
+      @include background-full;
+      opacity: 0.2;
+      z-index: -1;
+    }
+  }
+}
+
+.theme-slide4 {
+  position: relative;
+  z-index: 0;
+  
+  h2 {
+    color: $secondary-color;
+  }
+
+  &:is(.slide-background) {
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('slide4.png');
+      @include background-full;
+      opacity: 0.2;
+      z-index: -1;
+    }
+  }
+}
+
+.theme-slide5 {
+  position: relative;
+  z-index: 0;
+  
+  h2 {
+    color: $secondary-color;
+  }
+
+  &:is(.slide-background) {
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('slide5.png');
+      @include background-full;
+      opacity: 0.2;
+      z-index: -1;
+    }
+  }
+}
+
+.theme-slide6 {
+  position: relative;
+  z-index: 0;
+  
+  h2 {
+    color: $secondary-color;
+  }
+
+  &:is(.slide-background) {
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('slide6.png');
+      @include background-full;
+      opacity: 0.2;
+      z-index: -1;
+    }
+  }
+}
+
+.theme-section1 {
+  position: relative;
+  z-index: 0;
+
+  &:is(.slide-background) {
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('section1.png');
+      @include background-full;
+      opacity: 0.8;
+      z-index: -1;
+    }
+  }
+}
+
+.theme-section2 {
+  position: relative;
+  z-index: 0;
+
+  &:is(.slide-background) {
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('section2.png');
+      @include background-full;
+      opacity: 0.8;
+      z-index: -1;
+    }
+  }
+}
+
+.theme-section3 {
+  position: relative;
+  z-index: 0;
+
+  &:is(.slide-background) {
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('section3.png');
+      @include background-full;
+      opacity: 0.8;
+      z-index: -1;
+    }
+  }
+}
 ")
 writeLines(scss_content, file.path(target_folder, "custom.scss"))
+
+# Create slides.qmd with sample content
+slides_content <- paste0(
+  "---
+title: 'Presentation Title'
+author: 'Your Name Goes Here'
+format:
+  revealjs:
+    theme: custom.scss
+    highlight-style: ", recommendations$highlight_style,
+"    title-slide-attributes: 
+      data-background-image: 'images/title1.png'
+---
+
+## Slide 1 {.theme-slide1}
+
+This is some regular text, and this is some **bold text**, and  [this](https://google.com) is a hyperlink. This is some `inline_code`.
+
+* This is a list item
+* So is this
+* And this
+
+```{r}
+#| echo: true
+#| eval: false
+print('This is some code')
+```
+
+:::footer
+
+This is a footer with a link: [https://wwww.google.com](https://wwww.google.com)
+
+:::
+
+# Section 1 {.theme-section1 .center}
+
+## Slide 2 {.theme-slide2}
+
+This is some regular text, and this is some **bold text**, and  [this](https://google.com) is a hyperlink. This is some `inline_code`.
+
+* This is a list item
+* So is this
+* And this
+
+```{r}
+#| echo: true
+#| eval: false
+print('This is some code')
+```
+
+:::footer
+
+This is a footer with a link: [https://wwww.google.com](https://wwww.google.com)
+
+:::
+
+## Slide 3 {.theme-slide3}
+
+This is some regular text, and this is some **bold text**, and  [this](https://google.com) is a hyperlink. This is some `inline_code`.
+
+* This is a list item
+* So is this
+* And this
+
+```{r}
+#| echo: true
+#| eval: false
+print('This is some code')
+```
+
+:::footer
+
+This is a footer with a link: [https://wwww.google.com](https://wwww.google.com)
+
+:::
+
+# Section 2 {.theme-section2 .center}
+
+## Slide 4 {.theme-slide4}
+
+This is some regular text, and this is some **bold text**, and  [this](https://google.com) is a hyperlink. This is some `inline_code`.
+
+* This is a list item
+* So is this
+* And this
+
+```{r}
+#| echo: true
+#| eval: false
+print('This is some code')
+```
+
+:::footer
+
+This is a footer with a link: [https://wwww.google.com](https://wwww.google.com)
+
+:::
+
+## Slide 5 {.theme-slide5}
+
+This is some regular text, and this is some **bold text**, and  [this](https://google.com) is a hyperlink. This is some `inline_code`.
+
+* This is a list item
+* So is this
+* And this
+
+```{r}
+#| echo: true
+#| eval: false
+print('This is some code')
+```
+
+:::footer
+
+This is a footer with a link: [https://wwww.google.com](https://wwww.google.com)
+
+:::
+
+# Section 3 {.theme-section3 .center}
+
+## Slide 6 {.theme-slide6}
+
+This is some regular text, and this is some **bold text**, and  [this](https://google.com) is a hyperlink. This is some `inline_code`.
+
+* This is a list item
+* So is this
+* And this
+
+```{r}
+#| echo: true
+#| eval: false
+print('This is some code')
+```
+
+:::footer
+
+This is a footer with a link: [https://wwww.google.com](https://wwww.google.com)
+
+:::
+")
+writeLines(slides_content, file.path(target_folder, "slides.qmd"))
 
 output$status <- renderText("Theme generated successfully!")
   })
