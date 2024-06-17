@@ -3,9 +3,19 @@ library(shinyFiles)
 library(httr2)
 library(tidyverse)
 library(zip)
+library(jsonlite)
 
 server <- function(input, output, session) {
 
+  # Before button is pressed, display a message saying download is not yet ready.
+  output$status <- renderUI({
+    if (input$generate_button > 0) {
+      HTML('<span class="purple-background">Theme generated successfully! You may now use the download button.</span>')
+    } else {
+      HTML('<span class="purple-background">Theme has not yet been generated, so there are no files to download.</span>')
+    }
+  })
+  
   observeEvent(input$generate_button, {
     req(input$user_input, input$api_key)
     
@@ -25,8 +35,8 @@ server <- function(input, output, session) {
     dir.create(images_folder, showWarnings = FALSE, recursive = TRUE)
     dir.create(file.path(target_folder, ".github/workflows"), showWarnings = FALSE, recursive = TRUE)
     
-# Create .gitignore file
-gitignore_content <- 
+    # Create .gitignore file
+    gitignore_content <- 
 ".Rproj.user
 .Rhistory
 .RData
@@ -37,18 +47,18 @@ gitignore_content <-
 /_site/
 /slides_files/
 "
-writeLines(gitignore_content, file.path(target_folder, ".gitignore"))
+    writeLines(gitignore_content, file.path(target_folder, ".gitignore"))
 
-# Create _quarto.yml file
-quarto_yml_content <- paste0(
+    # Create _quarto.yml file
+    quarto_yml_content <- paste0(
 "project:
   title: ", user_input, " Quarto revealjs Theme
 ")
-writeLines(quarto_yml_content, file.path(target_folder, "_quarto.yml"))
+    writeLines(quarto_yml_content, file.path(target_folder, "_quarto.yml"))
 
 
-# Create README.md with some filler content
-readme_content <- paste0(
+    # Create README.md with some filler content
+    readme_content <- paste0(
 "# Project Title
 
 This is a sample Quarto project generated with the following theme:", user_input,
@@ -72,10 +82,10 @@ This project includes:
 - A `publish.yml` file that will configure GitHub Actions to automatically publish your slides to GitHub Pages
 - A `.gitignore` to avoid accidentally uploading unnecessary files to GitHub
 ")
-writeLines(readme_content, file.path(target_folder, "README.md"))
+    writeLines(readme_content, file.path(target_folder, "README.md"))
 
-# Create .github/workflows/publish.yml file
-publish_yml_content <- 
+    # Create .github/workflows/publish.yml file
+    publish_yml_content <- 
 "on:
   workflow_dispatch:
   push:
@@ -118,48 +128,50 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 "
-writeLines(publish_yml_content, file.path(target_folder, ".github/workflows/publish.yml"))
+    writeLines(publish_yml_content, file.path(target_folder, ".github/workflows/publish.yml"))
 
-# Generate images using DALLE 3
-image_names <- c("title1.png", paste0("section", 1:3, ".png"), paste0("slide", 1:6, ".png"))
-for (i in 1:length(image_names)){
-  response <- request("https://api.openai.com/v1") |>
-    req_url_path_append("/images/generations") |>
-    req_auth_bearer_token(input$api_key) |>
-    req_body_json(
-      list(prompt = paste(user_input, "desktop background"))
-    ) |>
-    req_perform() |>
-    resp_body_json()
+    # Generate images using DALLE 3
+    if (input$images_checkbox == TRUE) {
+      image_names <- c("title1.png", paste0("section", 1:3, ".png"), paste0("slide", 1:6, ".png"))
+      for (i in 1:length(image_names)){
+        response <- request("https://api.openai.com/v1") |>
+          req_url_path_append("/images/generations") |>
+          req_auth_bearer_token(input$api_key) |>
+          req_body_json(
+            list(prompt = paste(user_input, "desktop background"))
+          ) |>
+          req_perform() |>
+          resp_body_json()
+        
+        image_url <- response$data[[1]]$url
+        download.file(image_url, file.path(images_folder, image_names[i]), mode = "wb")
+      }  
+    }
+    
+    # Get font and font color recommendations using OpenAI Chat model
+    chat_response <- request("https://api.openai.com/v1") |>
+      req_url_path_append("/chat/completions") |>
+      req_auth_bearer_token(Sys.getenv("OPENAI_API_KEY")) |>
+      req_body_json(list(
+        model = "gpt-4",
+        messages = list(
+          list(role = "system", content = "You are a design assistant."),
+          list(role = "user", content = paste("Based on the theme", user_input, ", recommend a Google font family and three colors for primary, secondary, and accent. The accent color should contrast the other colors. The font family should be the full name used by Google Fonts. Also recommend a pandoc highlight-style name that matches. Provide the recommendations in JSON format with keys: 'font_family', 'primary_color', 'secondary_color', 'accent_color', and 'highlight_style'."))
+        )
+      )) |>
+      req_perform() |>
+      resp_body_json()
+    
+    recommendations <- fromJSON(chat_response$choices[[1]]$message$content)
+    
+    font_family <- recommendations$font_family
+    primary_color <- recommendations$primary_color
+    secondary_color <- recommendations$secondary_color
+    accent_color <- recommendations$accent_color
 
-  image_url <- response$data[[1]]$url
-  download.file(image_url, file.path(images_folder, image_names[i]), mode = "wb")
-}
-
-# Get font and font color recommendations using OpenAI Chat model
-chat_response <- request("https://api.openai.com/v1") |>
-  req_url_path_append("/chat/completions") |>
-  req_auth_bearer_token(Sys.getenv("OPENAI_API_KEY")) |>
-  req_body_json(list(
-    model = "gpt-4",
-    messages = list(
-      list(role = "system", content = "You are a design assistant."),
-      list(role = "user", content = paste("Based on the theme", user_input, ", recommend a Google font family and three colors for primary, secondary, and accent. The accent color should contrast the other colors. The font family should be the full name used by Google Fonts. Also recommend a pandoc highlight-style name that matches. Provide the recommendations in JSON format with keys: 'font_family', 'primary_color', 'secondary_color', 'accent_color', and 'highlight_style'."))
-    )
-  )) |>
-  req_perform() |>
-  resp_body_json()
-
-recommendations <- fromJSON(chat_response$choices[[1]]$message$content)
-
-font_family <- recommendations$font_family
-primary_color <- recommendations$primary_color
-secondary_color <- recommendations$secondary_color
-accent_color <- recommendations$accent_color
-
-# Create custom.scss with theme elements generated by user prompt
-font_url <- paste0("@import url('", "https://fonts.googleapis.com/css2?family=", gsub(" ", "+", recommendations$font_family), "&display=swap", "');\n")
-scss_content <- paste0(
+    # Create custom.scss with theme elements generated by user prompt
+    font_url <- paste0("@import url('", "https://fonts.googleapis.com/css2?family=", gsub(" ", "+", recommendations$font_family), "&display=swap", "');\n")
+    scss_content <- paste0(
 "/*-- scss:defaults --*/
 $primary-color: ", recommendations$primary_color, ";\n",
 "$secondary-color: ", recommendations$secondary_color, ";\n",
@@ -403,11 +415,11 @@ $code-block-bg: $tertiary-color;
   }
 }
 ")
-writeLines(scss_content, file.path(target_folder, "custom.scss"))
+    writeLines(scss_content, file.path(target_folder, "custom.scss"))
 
-# Create slides.qmd with sample content
-slides_content <- paste0(
-  "---
+    # Create slides.qmd with sample content
+    slides_content <- paste0(
+"---
 title: 'Presentation Title'
 author: 'Your Name Goes Here'
 format:
@@ -544,18 +556,26 @@ This is a footer with a link: [https://wwww.google.com](https://wwww.google.com)
 
 :::
 ")
-writeLines(slides_content, file.path(target_folder, "slides.qmd"))
+    writeLines(slides_content, file.path(target_folder, "slides.qmd"))
 
-  output$status <- renderText("Theme generated successfully!")
+    # After button has been pressed and files have been generated, update the message. 
+    output$status <- renderUI({
+      if (input$generate_button > 0) {
+        HTML('<span class="purple-background">Theme generated successfully! You may now use the download button.</span>')
+      } else {
+        HTML('<span class="purple-background">Theme has not yet been generated, so there are no files to download.</span>')
+      }
     })
+    
+    output$downloadData <- downloadHandler(
+      filename = function() {
+        paste("project_files_", Sys.Date(), ".zip", sep = "")
+      },
+      content = function(file) {
+        zip(file, "www/demo.png")
+      },
+      contentType = "application/zip"
+    )
   
-  output$downloadData <- downloadHandler(
-    filename = function() {
-      paste("project_files_", Sys.Date(), ".zip", sep = "")
-    },
-    content = function(file) {
-      zip(file, list.files())
-    },
-    contentType = "application/zip"
-  )
+  })
 }
