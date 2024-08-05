@@ -55,9 +55,9 @@ There are two ways to use the Shiny app to generate the files. Option A is to ru
 * On GitHub, add a `gh-pages` branch and ensure that `gh-pages` is selected under `Settings > Pages > Deploy from a branch`.
 * A few minutes later, you should be able to view the slides by going to `Actions` and clicking on `pages build and deployment`, followed by clicking on the link that is shown under the `deploy` workflow run.
 
-![](www/pages_build_and_deployment.png)
+<img src="www/pages_build_and_deployment.png" width="300">
 
-![](www/deploy_link.png)
+<img src="www/deploy_link.png" width="300">
 
 ### Step 3: Modifying the slide content
 
