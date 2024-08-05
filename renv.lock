@@ -1393,6 +1393,19 @@
       ],
       "Hash": "f39bb3c44a9b496723ec7e86f9a771d8"
     },
+    "shinyjs": {
+      "Package": "shinyjs",
+      "Version": "2.1.0",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "digest",
+        "jsonlite",
+        "shiny"
+      ],
+      "Hash": "802e4786b353a4bb27116957558548d5"
+    },
     "sourcetools": {
       "Package": "sourcetools",
       "Version": "0.1.7-1",

@@ -5,10 +5,20 @@ library(tidyverse)
 library(zip)
 library(jsonlite)
 library(shinycssloaders)
+library(shinyjs)
 
 server <- function(input, output, session) {
 
+  # Initialize reactive value that is used to display the loading bar/spinner
   loading <- reactiveVal(FALSE)
+  
+  # Enable the generate button only once the API key is provided
+  observe({
+    shinyjs::toggleState("generate_button", !is.null(input$api_key) && input$api_key != "")
+  })
+  
+  # Initially disable the download button (should  not be possible until all files are generated)
+  shinyjs::disable("downloadData")
   
   # Before button is pressed, display a message saying download is not yet ready.
   output$status <- renderUI({
@@ -618,8 +628,11 @@ This is a footer with a link: [https://wwww.google.com](https://wwww.google.com)
 ")
     writeLines(slides_content, file.path(target_folder, "slides.qmd"))
 
-    # Once files have finished generating, the loading spinner can be turned off
+    # Once files have finished generating:
+    # The loading spinner can be turned off
     loading(FALSE)
+    # And the download button can be enabled
+    shinyjs::enable("downloadData")
     
     # After button has been pressed and files have been generated, update the message. 
     output$status <- renderUI({

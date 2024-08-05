@@ -2,8 +2,10 @@ library(shiny)
 library(shinyFiles)
 library(bslib)
 library(shinycssloaders)
+library(shinyjs)
 
 ui <- fluidPage(
+  useShinyjs(),
   theme = bs_theme(bootswatch = "lux", primary = "#680dad", secondary = "#9867ea"),
   
   tags$head(
@@ -46,13 +48,13 @@ ui <- fluidPage(
       textInput("api_key", "Enter your OpenAI API key"),
       tags$p("To generate images for slide backgrounds, use the checkbox below. Note that you must run it locally and not from shinyapps.io to generate images, as the app will time out in the browser. Download the app from ", tags$a(href = "https://github.com/melissavanbussel/theme-generator", target = "_blank", "my GitHub"), "to run it locally."),
       checkboxInput("images_checkbox", "Generate images in addition to CSS?", value = FALSE),
-      actionButton("generate_button", "Generate my theme"),
+      actionButton("generate_button", "Generate my theme", disabled = TRUE),
       br(),
       br(),
       helpText('Once you see a message highlighted in purple saying "Theme generated successfully!", you may download all the generated files.'),
       br(),
       br(),
-      downloadButton("downloadData", "Download All Files"),
+      downloadButton("downloadData", "Download All Files", disabled = TRUE),
       br(),
       br(),
       tags$p("© 2024 ", tags$a(href = "https://www.melissavanbussel.com", target = "_blank", "Melissa Van Bussel"))
