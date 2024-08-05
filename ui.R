@@ -27,7 +27,12 @@ ui <- fluidPage(
           border-radius: 5px;
         }
       ")
-    )
+    ),
+    tags$script(HTML("
+    Shiny.addCustomMessageHandler('disableButton', function(message) {
+      document.getElementById('generate_button').disabled = true;
+    });
+  "))
   ),
   
   div(class = "mt-4",  # Margin top class added to this div

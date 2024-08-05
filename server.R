@@ -36,6 +36,9 @@ server <- function(input, output, session) {
     # When button is pressed, display a loading bar/spinner
     loading(TRUE)
     
+    # Disable the "Generate my theme" button from being clicked again
+    session$sendCustomMessage('disableButton', TRUE)
+    
     user_input <- input$user_input
     
     # Create temporary folder to save all outputs to
