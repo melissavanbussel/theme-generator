@@ -72,3 +72,9 @@ There are two ways to use the Shiny app to generate the files. Option A is to ru
 Please note that the slides never need to be rendered locally in order for them to work properly on GitHub Pages. If you would like to render them locally, though, the following step is necessary: 
 
 * When rendering locally, make a copy of all images in the `images` folder and put them into `slides_files/libs/revealjs/dist/theme`. 
+
+## Credits
+
+This app was developed by Melissa Van Bussel, with assistance from OpenAI's GPT-4o model. 
+
+Knowledge on how to modify `custom.scss` files was gained through reading [Emil Hvitfeldt's Slidecraft 101 blog series](https://emilhvitfeldt.com/blog.html#category=slidecraft%20101). 
