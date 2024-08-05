@@ -97,27 +97,29 @@ This is a Quarto revealjs presentation template generated using [this app](https
 
 **Pre-requisites:** You will need R and RStudio installed (or if not RStudio, another means of creating `.Rproj` files). To be able to push to GitHub Pages, you will need Git installed, and you will need to have a GitHub account. 
 
-### Step 1: Generating the files
+There are two ways to use the Shiny app to generate the files. Option A is to run it from shinyapps.io ([https://melissavanbussel.shinyapps.io/quarto_theme_generator/](https://melissavanbussel.shinyapps.io/quarto_theme_generator/)), and Option B is to run it locally. 
 
-There are two ways to use the Shiny app to generate the files. Option A is to run it from [shinyapps.io](https://melissavanbussel.shinyapps.io/quarto_theme_generator/), and Option B is to run it locally. In order to generate images for the slide backgrounds, Option B must be selected (this is because generating the images takes several minutes, and the app will timeout in the browser mid-way through generating the images). 
+**Note:** In order to generate images for the slide backgrounds, Option B must be selected (this is because generating the images takes several minutes, and the app will timeout in the browser mid-way through generating the images). 
 
 #### Option A: Running the app from shinyapps.io 
 
 * Navigate to [https://melissavanbussel.shinyapps.io/quarto_theme_generator/](https://melissavanbussel.shinyapps.io/quarto_theme_generator/).
-* Enter a phrase for the theme you would like to generate (e.g., 'Abstract purple minimal'').
-* Enter your OpenAI API key (see [this page](https://openai.com/index/openai-api/) to obtain one).
-* Ensure that the 'Generate images in addition to CSS?' checkbox is **unchecked**. Leaving it checked (when running from shinyapps.io) will result in the app timing out and not generating the files. 
-* Click on the 'Generate my theme' button.
-* Notice that the purple text at the top right of the app will initially say 'Theme has not yet been generated, so there are no files to download.'
-* Once the files have finished generating, the purple text will change to 'Theme generated successfully! You may now use the download button.'.
-* You may now click the 'Download all files' button and save the ZIP folder on your computer. 
 
 #### Option B: Running the app locally
 
 * Download [this](https://github.com/melissavanbussel/theme-generator) repository.
 * Ensure all the packages listed at the top of the `ui.R` and `server.R` files are installed (use `install.packages` if not). Note that the project uses `renv`, so packages will be installed at the project-level.
 * Run the Shiny app (e.g., open `server.R` in RStudio and click the 'Run App' button).
-* Follow the same steps as for Option A, but you may check the 'Generate images in addition to CSS?' checkbox, if you wish. 
+
+### Step 1: Generating the files
+
+* Enter a phrase for the theme you would like to generate (e.g., 'Abstract purple minimal').
+* Enter your OpenAI API key (see [this page](https://openai.com/index/openai-api/) to obtain one).
+* If you would like to generate images for the slide backgrounds, ensure that the 'Generate images in addition to CSS?' checkbox is checked. Otherwise, leave it unchecked. (Note: images can only be generated if running the app locally instead of on shinyapps.io).
+* Click on the 'Generate my theme' button.
+* Notice that the purple text at the top right of the app will initially say 'Theme has not yet been generated, so there are no files to download.'
+* Once the files have finished generating, the purple text will change to 'Theme generated successfully! You may now use the download button.'.
+* You may now click the 'Download all files' button and save the ZIP folder on your computer. 
 
 ### Step 2: Pushing to GitHub Pages 
 

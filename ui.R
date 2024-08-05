@@ -29,6 +29,16 @@ ui <- fluidPage(
           padding: 10px;
           border-radius: 5px;
         }
+        .form-control {
+          background-color: #E6E6FA;
+        }
+        .form-check-input, 
+        .shiny-input-container .checkbox input, 
+        .shiny-input-container .checkbox-inline input, 
+        .shiny-input-container .radio input, 
+        .shiny-input-container .radio-inline input {
+          background-color: #E6E6FA;
+        }
       ")
     ),
     tags$script(HTML("
