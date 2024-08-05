@@ -216,7 +216,7 @@ jobs:
         model = "gpt-4",
         messages = list(
           list(role = "system", content = "You are a design assistant."),
-          list(role = "user", content = paste("Based on the theme", user_input, ", recommend a Google font family and three colors for primary, secondary, and accent. The accent color should contrast the other colors. The font family should be the full name used by Google Fonts. Also recommend a pandoc highlight-style name that matches. Provide the recommendations in JSON format with keys: 'font_family', 'primary_color', 'secondary_color', 'accent_color', and 'highlight_style'."))
+          list(role = "user", content = paste("Based on the theme", user_input, ", recommend a Google font family and three colors for primary, secondary, and accent. The accent color should contrast the other colors. The font family should be the full name used by Google Fonts. Also recommend a pandoc highlight-style name that matches, and do not use the monochrome pandoc highlight-style. Provide the recommendations in JSON format with keys: 'font_family', 'primary_color', 'secondary_color', 'accent_color', and 'highlight_style'."))
         )
       )) |>
       req_perform() |>
