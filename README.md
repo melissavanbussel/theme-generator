@@ -22,6 +22,8 @@ The app then generates all necessary files:
 
 ## How to use this app
 
+**You can watch the video instructions here:** [https://youtu.be/WWbuV43cV9Q](https://youtu.be/WWbuV43cV9Q). If you prefer text-based instructions, please follow the steps below. :)
+
 **Pre-requisites:** You will need R and RStudio installed (or if not RStudio, another means of creating `.Rproj` files). To be able to push to GitHub Pages, you will need Git installed, and you will need to have a GitHub account. 
 
 There are two ways to use the Shiny app to generate the files. Option A is to run it from shinyapps.io ([https://melissavanbussel.shinyapps.io/quarto_theme_generator/](https://melissavanbussel.shinyapps.io/quarto_theme_generator/)), and Option B is to run it locally. 
