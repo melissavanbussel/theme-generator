@@ -54,7 +54,7 @@ ui <- fluidPage(
     
     mainPanel(class = "main-panel",
       br(),
-      uiOutput("status"),
+      withSpinner(uiOutput("status")),
       uiOutput("checkbox_validator"),
       br(),
       br(),

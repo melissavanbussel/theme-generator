@@ -4,15 +4,22 @@ library(httr2)
 library(tidyverse)
 library(zip)
 library(jsonlite)
+library(shinycssloaders)
 
 server <- function(input, output, session) {
 
+  loading <- reactiveVal(FALSE)
+  
   # Before button is pressed, display a message saying download is not yet ready.
   output$status <- renderUI({
-    if (input$generate_button > 0) {
-      HTML('<span class="purple-background">Theme generated successfully! You may now use the download button.</span>')
+    if (loading()) {
+      HTML('<span class="purple-background">Generating your theme, please wait...</span>')
     } else {
-      HTML('<span class="purple-background">Theme has not yet been generated, so there are no files to download.</span>')
+      if (input$generate_button > 0) {
+        HTML('<span class="purple-background">Theme generated successfully! You may now use the download button.</span>')
+      } else {
+        HTML('<span class="purple-background">Theme has not yet been generated, so there are no files to download.</span>')
+      }
     }
   })
   
@@ -25,6 +32,9 @@ server <- function(input, output, session) {
   
   observeEvent(input$generate_button, {
     req(input$user_input, input$api_key)
+    
+    # When button is pressed, display a loading bar/spinner
+    loading(TRUE)
     
     user_input <- input$user_input
     
@@ -605,6 +615,9 @@ This is a footer with a link: [https://wwww.google.com](https://wwww.google.com)
 ")
     writeLines(slides_content, file.path(target_folder, "slides.qmd"))
 
+    # Once files have finished generating, the loading spinner can be turned off
+    loading(FALSE)
+    
     # After button has been pressed and files have been generated, update the message. 
     output$status <- renderUI({
       if (input$generate_button > 0) {
