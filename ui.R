@@ -1,6 +1,7 @@
 library(shiny)
 library(shinyFiles)
 library(bslib)
+library(shinycssloaders)
 
 ui <- fluidPage(
   theme = bs_theme(bootswatch = "lux", primary = "#680dad", secondary = "#9867ea"),
