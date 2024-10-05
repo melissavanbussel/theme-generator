@@ -82,3 +82,15 @@ Please note that the slides never need to be rendered locally in order for them 
 This app was developed by Melissa Van Bussel, with assistance from OpenAI's GPT-4o model. 
 
 Knowledge on how to modify `custom.scss` files was gained through reading [Emil Hvitfeldt's Slidecraft 101 blog series](https://emilhvitfeldt.com/blog.html#category=slidecraft%20101). 
+
+## Troubleshooting common errors
+
+* This app *probably* doesn't work with the free trial version of the OpenAI API.
+* If the `_quarto.yml` file gets corrupted, try either running the app again OR just delete the corrupted `_quarto.yml` and create a new `_quarto.yml` file with the contents below:
+
+```
+project:
+  title: Put Whatever Title You Want
+```
+
+Unfortunately, I'm not sure why that file occasionally gets corrupted (can't figure out how to reproduce the problem consistently 😢), or why it's only that file, or why it's only some of the time. If you figure that out, please let me know!
